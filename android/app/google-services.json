@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "906811097561",
+    "project_id": "tesis-usm-2023",
+    "storage_bucket": "tesis-usm-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906811097561:android:c24442ac08a96e6bb7d9c8",
+        "android_client_info": {
+          "package_name": "com.kunven.tesis2023"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906811097561-ih9cclmbep6j3u76aabdht5pngf2fg6q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906811097561-ih9cclmbep6j3u76aabdht5pngf2fg6q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
