@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Login } from './Login';
+import { Login } from './src/Login';
 import auth from '@react-native-firebase/auth';
 
 export default function App() {
