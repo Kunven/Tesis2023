@@ -1,12 +1,9 @@
 import auth from '@react-native-firebase/auth';
 //import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,  
+import {  
   StyleSheet,
-  Text,
-  useColorScheme,
+  Text,  
   View,
   TextInput,
   TouchableOpacity,
@@ -17,9 +14,11 @@ import {
 
 //import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-export const Login = () => {
+export const Login = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [navState, setNav] = useState();
+
   const onPressLogin = () => {
     // Do something about login operation
     auth().signInWithEmailAndPassword(email,password)
@@ -34,21 +33,15 @@ export const Login = () => {
       }
     })
   };
+
   const onPressForgotPassword = () => {
+    props.nav(2)
     // Do something about forgot password operation
   };
-    const onPressSignUp = () => {
+
+  const onPressSignUp = () => {
+    props.nav(3)
     // Do something about signup operation
-  };
-
-  //const nav = useNavigation<NativeStackNavigationProp<any>>();
-
-  //const goToRegistration = () => {
-    //nav.push("Register");
-  //};
-
-  const goToMainFlow = async () => {
-    // Login Query
   };
 
   return (    

@@ -1,8 +1,11 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
+import {Text, View,Button} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Login } from './src/Login';
 import auth from '@react-native-firebase/auth';
+import { AccessNav } from './src/AccessNav';
+import {    
+  Alert,
+} from "react-native";
 
 export default function App() {
   // Set an initializing state whilst Firebase connects
@@ -14,6 +17,10 @@ export default function App() {
     setUser(user);
     if (initializing) setInitializing(false);
   }
+  function logout() {
+    Alert.alert(user.uid)
+    //auth().signOut()
+  }
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -24,16 +31,16 @@ export default function App() {
 
   if (!user) {
     return (
-      <Login/>
+      <AccessNav/>
     );
   }
   return (
     <View>
       <Text>Aqui va la app</Text>
       <Button
-        onPress={() => auth().signOut()}
+        onPress={logout}
         title="Cerrar Sesion"
-        color="#841584"        
+        color="#841584"
       />
     </View>
   );  
