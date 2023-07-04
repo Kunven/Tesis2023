@@ -17,7 +17,7 @@ export const UserApp = (props) => {
   }
   return (
     <View style={styles.container}>
-        <MapView style={styles.map} provider={"google"}/>
+        <MapView style={styles.map} provider={PROVIDER_GOOGLE}/>
     </View>
   );
 };
