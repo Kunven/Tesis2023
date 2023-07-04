@@ -6,6 +6,7 @@ import { AccessNav } from './src/AccessNav';
 import {    
   Alert,
 } from "react-native";
+import { AppNav } from './src/AppNav';
 
 export default function App() {
   // Set an initializing state whilst Firebase connects
@@ -18,8 +19,8 @@ export default function App() {
     if (initializing) setInitializing(false);
   }
   function logout() {
-    Alert.alert(user.uid)
-    //auth().signOut()
+    //Alert.alert(user.uid)
+    auth().signOut()
   }
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function App() {
   }
   return (
     <View>
-      <Text>Aqui va la app</Text>
+      <AppNav uid={user.uid}/>
       <Button
         onPress={logout}
         title="Cerrar Sesion"

@@ -28,15 +28,15 @@ export const Register = (props) => {
       Alert.alert("Las contraseñas no coinciden")
     }else{
       auth().createUserWithEmailAndPassword(email,password).then((userCredential) =>{
-        const newReference = database().ref('/users').push();
+        const newReference = database().ref('/users/' + userCredential.user.uid);
         newReference
         .set({
           email: email,
           nombres: names,
           lastNames: lastNames,
           phone: phone,
-          rol: 1,
-          uid: userCredential.user.uid
+          rol: 1
+          //uid: userCredential.user.uid
         })
         .then(() => {Alert.alert('Usuario Creado con Exito');props.nav(1)});
       }).catch((error) => {
@@ -99,7 +99,7 @@ export const Register = (props) => {
       <TouchableOpacity
           onPress = {registerUser}
           style={styles.sendBtn}>
-          <Text style={styles.loginText}>Registrar</Text>
+          <Text style={styles.loginText}>Crear Usuario</Text>
         </TouchableOpacity>
       </View>    
     </Pressable>    

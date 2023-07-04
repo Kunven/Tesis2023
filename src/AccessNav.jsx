@@ -29,7 +29,7 @@ export const AccessNav = () => {
     default:
       return(<Login nav={getNavData}/>)
       break;
-  }   
+  }
 };
 
 const styles = StyleSheet.create({
