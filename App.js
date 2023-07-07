@@ -1,18 +1,15 @@
-import {Text, View,Button} from 'react-native';
+import {StatusBar} from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Login } from './src/Login';
 import auth from '@react-native-firebase/auth';
 import { AccessNav } from './src/AccessNav';
-import {    
-  Alert,
-} from "react-native";
+
 import { AppNav } from './src/AppNav';
 
 export default function App() {
   // Set an initializing state whilst Firebase connects
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
+  StatusBar.setHidden(true)
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);
@@ -23,7 +20,7 @@ export default function App() {
     auth().signOut()
   }
 
-  useEffect(() => {
+  useEffect(() => {    
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
@@ -34,15 +31,14 @@ export default function App() {
     return (
       <AccessNav/>
     );
-  }
-  return (
-    <View>
-      <AppNav uid={user.uid}/>
-      <Button
+  }else{
+    return (
+      <AppNav uid={user.uid}/>    
+    );
+  }  
+}
+{/* <Button
         onPress={logout}
         title="Cerrar Sesion"
         color="#841584"
-      />
-    </View>
-  );  
-}
+      /> */}

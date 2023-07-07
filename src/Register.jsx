@@ -1,6 +1,5 @@
 import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-
+import firestore from '@react-native-firebase/firestore';
 import React, { useState } from "react";
 import {  
   StyleSheet,
@@ -28,17 +27,16 @@ export const Register = (props) => {
       Alert.alert("Las contraseñas no coinciden")
     }else{
       auth().createUserWithEmailAndPassword(email,password).then((userCredential) =>{
-        const newReference = database().ref('/users/' + userCredential.user.uid);
-        newReference
-        .set({
+        firestore().collection('users').doc(userCredential.user.uid).set({
           email: email,
           nombres: names,
           lastNames: lastNames,
           phone: phone,
           rol: 1
           //uid: userCredential.user.uid
+        }).then(() => {Alert.alert('Usuario Creado con Exito');props.nav(1)}).catch( (error) =>{
+          Alert.alert(error.code)
         })
-        .then(() => {Alert.alert('Usuario Creado con Exito');props.nav(1)});
       }).catch((error) => {
         Alert.alert(error.code)
       })      

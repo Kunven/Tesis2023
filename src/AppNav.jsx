@@ -1,23 +1,23 @@
 //import auth from '@react-native-firebase/auth';
 //import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {  
   StyleSheet,
   Text,  
   View,  
 } from "react-native";
-import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 import { UserApp } from "./UserApp";
 
 export const AppNav = (props) => {  
-  const [user, setUser] = useState({});  
-  database()
-  .ref('/users/' + props.uid)
-  .once('value')
-  .then(snapshot => {
-    setUser(snapshot.val())
-    //user =  snapshot.val()
-  });    
+  const [user, setUser] = useState({rol: 1
+  });
+  useEffect(() => {
+    (async () => {
+      let data = (await firestore().collection('users').doc(props.uid).get()).data()
+      setUser(data)
+    })();
+  }, []);
   switch (user.rol) {
     case 1://Usuario
       return(<UserApp uid={props.uid}/>)
@@ -29,11 +29,7 @@ export const AppNav = (props) => {
     return(<Text>Admin</Text>)
       break;
     default://Usuario
-    return(<UserApp uid={props.uid}/>)
+    return(<Text>Error</Text>)
       break;
   }
 };
-
-const styles = StyleSheet.create({
-  
-});
