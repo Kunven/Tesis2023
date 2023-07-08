@@ -1,6 +1,6 @@
 import { Card, Dialog } from '@rneui/themed';
-import Modal from 'modal-react-native-web';
 import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 import React, { useState, useEffect } from "react";
 import {  
   StyleSheet,
@@ -11,24 +11,29 @@ import {
 
 export const ViajeUser = (props) => { 
   const [ride, setRide] = useState(0);  
-  const [driver,setDriver] = useState(null)
+  const [driver,setDriver] = useState({nombres: "", lastNames: "", phone: ""})
   const [modalCancelacion,setCancelModal] = useState(false)
   useEffect(() => {
     (async () => {
-      let data = (await firestore().collection('viajes').where('user','==',props.uid)
+      let data = (await firestore().collection('viajes').where('user.uid','==',props.uid)
       .where('estado','in',["Pendiente","En Proceso"]).limit(1).get().then(async (querySnapshot) =>{
         querySnapshot.forEach(async (doc) => {          
-          setRide(doc.data())
+          setRide({id: doc.id,... doc.data()})
           if (doc.data().conductor != null) {            
             let data = await firestore().collection('users').doc(doc.data().conductor).get()            
             setDriver(data.data())
           }
         });
-      }))      
+      }))
     })();
   }, []);
-  const cancelRide = () =>{
-
+  const cancelRide = async () =>{
+    await firestore().collection('viajes').doc(ride.id).update({estado: "Cancelado",}).then(async () =>{
+      await firestore().collection('users').doc(props.uid).update({viaje: "", viajeEnProceso: 0}).then(() =>{
+        setCancelModal(false)
+        props.viajeEnProceso(0)
+      })
+    })    
   }
   return (
     <View style={styles.container}>      
@@ -38,11 +43,28 @@ export const ViajeUser = (props) => {
         {ride.estado == 'Pendiente' ? 
           <Text>Cuando un conductor apruebe tu viaje, seras contactado</Text> :
           <Text>{driver.nombres} {driver.lastNames} esta en camino! Su telefono es: <Text style={styles.bold}>{driver.phone}</Text></Text>
-        }
-        <Button size="sm" type="clear" title='Learn More' onPress={cancelRide}>
+        }        
+      </Card>
+      <Card containerStyle={styles.card}>
+        <Text style={styles.header}>Cancelar Viaje</Text>
+        <Text style={styles.text}>Si tu conductor no ha llegado, o no se ha comunicado contigo, puedes cancelar el viaje cuando quieras</Text>        
+        <Button size="sm" title='Cancelar Viaje' onPress={() => {setCancelModal(true)}}>
           Learn More
         </Button>
-      </Card>      
+      </Card>
+      <Dialog isVisible={modalCancelacion} onBackdropPress={() => {setCancelModal(false)}}>
+        <Dialog.Title title='Cancelar Viaje'/>
+        <Text style={styles.text}>Seguro que deseas cancelar el viaje?</Text>
+        <Dialog.Actions>
+          <Dialog.Button title="Si" onPress={cancelRide}/>
+          <Dialog.Button title="No" onPress={() => {setCancelModal(false)}}/>
+        </Dialog.Actions>
+      </Dialog> 
+      <Button
+          onPress={() => auth().signOut()}
+          title="Cerrar Sesion"
+          color="#841584"
+        />
     </View>
   );
 };
@@ -50,7 +72,9 @@ export const ViajeUser = (props) => {
 const styles = StyleSheet.create({  
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',        
+    backgroundColor: '#ccffff',
+    
+    justifyContent: 'center',
   },
   bold:{
     fontWeight: 'bold'

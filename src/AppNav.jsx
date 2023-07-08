@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import firestore from '@react-native-firebase/firestore';
 import { UserApp } from "./UserApp";
+import { DriverApp } from "./DriverApp";
 
 export const AppNav = (props) => {  
   const [user, setUser] = useState({rol: 1
@@ -23,7 +24,7 @@ export const AppNav = (props) => {
       return(<UserApp uid={props.uid}/>)
       break;
     case 2://Conductor
-    return(<Text>Conductor</Text>)
+    return(<DriverApp uid={props.uid}/>)
       break;
     case 3://Administrador
     return(<Text>Admin</Text>)

@@ -2,7 +2,7 @@ import {StatusBar} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import auth from '@react-native-firebase/auth';
 import { AccessNav } from './src/AccessNav';
-
+import Geocoder from 'react-native-geocoding';
 import { AppNav } from './src/AppNav';
 
 export default function App() {
@@ -10,6 +10,7 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   StatusBar.setHidden(true)
+  Geocoder.init("AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg");
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);

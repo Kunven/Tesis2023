@@ -5,13 +5,14 @@ import auth from '@react-native-firebase/auth';
 import MapView from 'react-native-maps';
 import firestore from '@react-native-firebase/firestore';
 import * as Location from 'expo-location';
+import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import React, { useState, useEffect } from "react";
 import {StyleSheet,Text,View,Button,Modal, Pressable} from "react-native";
 import { ViajeUser } from './ViajeUser';
-
+import { Card, Dialog } from '@rneui/themed';
 export const UserApp = (props) => {
-  const [AppState, setApp] = useState(1);
+  const [AppState, setApp] = useState(0);
   const [coords, setCoords] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [viajeEnProceso, setViajeState] = useState(0);
@@ -26,8 +27,8 @@ export const UserApp = (props) => {
     setCoords({ region })
     //console.log(coords)
   }  
-  const getNavData = (data) => {    
-    setNav(data)
+  const setViaje = (data) => {    
+    setViajeState(data)
   }  
   const createRoute = async () => {
     //console.log(coords.region)
@@ -46,21 +47,40 @@ export const UserApp = (props) => {
     setDistance(result.distance)    
     setModalVisible(true)
   }
-  const createRide = async () =>{    
-    firestore().collection('viajes').add({
-      origin: origin,
-      destination: destination,
-      user: props.uid,
-      conductor: null,
-      estado: "Pendiente",
-      distancia: distance,
-      costo: 3 + (Math.round(distance)*0.5)
-    }).then(() =>{
-      firestore().collection('users').doc(props.uid).update({viajeEnProceso: 1}).then(() =>{
-        setViajeState(1)
-        setModalVisible(!modalVisible)
+  const createRide = async () =>{
+    //Getting geocodes from coordinates
+    let originAddress = await Geocoder.from({
+      latitude : origin.latitude,
+      longitude : origin.longitude
+    });    
+    let destinationAddress = await Geocoder.from({
+      latitude : destination.latitude,
+      longitude : destination.longitude
+    });
+    await firestore().collection('users').doc(props.uid).get().then(async (doc) =>{
+      let userData = doc.data()
+      await firestore().collection('viajes').add({
+        origin: {address:originAddress.results[0].formatted_address,...origin},
+        destination: {address: destinationAddress.results[0].formatted_address,...destination},
+        user: {uid: props.uid, client: userData.nombres + ' ' + userData.lastNames,phone: userData.phone},
+        conductor: null,
+        estado: "Pendiente",
+        distancia: distance,
+        costo: 3 + (Math.round(distance)*0.5)
+      }).then(async () =>{
+        await firestore().collection('users').doc(props.uid).update({viajeEnProceso: 1}).then(() =>{
+          //restarting vars
+          setModalVisible(false);
+          setCoords(null)
+          setOrigin(null)
+          setDistance(0)
+          setDestination(null)
+          //changing ride state state
+          setViajeState(1)        
+        })
       })
-    })    
+    })
+    //saving ride    
   }
   useEffect(() => {
     (async () => {
@@ -70,8 +90,40 @@ export const UserApp = (props) => {
   }, []);
   if (viajeEnProceso == 0) {
     return (
-      <View>    
-       <Modal
+      <View style={styles.container}>
+        <Card containerStyle={styles.card}>
+            <Text style={styles.header}>A Donde Quieres Ir?</Text>
+            <Button
+            onPress={createRoute}
+            title="Confirmar Destino"
+            color="#841584"
+          />
+        </Card>
+        <MapView 
+          style={styles.map} 
+          provider={PROVIDER_GOOGLE}
+          showsUserLocation={true}
+          initialRegion={{
+            latitude: -2.16299,
+            longitude: -79.9001917,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          onRegionChange={updateCoords}
+        >    
+        <MapViewDirections
+        origin={origin}
+        destination={destination}
+        apikey={GOOGLE_MAPS_APIKEY}
+        onReady={ async (result) =>  {await scheduleRide(result)}}
+        />
+        </MapView>      
+        <Button
+          onPress={logout}
+          title="Cerrar Sesion"
+          color="#841584"
+        />
+        <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -103,44 +155,12 @@ export const UserApp = (props) => {
             </View>
           </View>
         </Modal>
-        <Text>A Donde Quieres ir?        
-          <Button
-            onPress={createRoute}
-            title="Confirmar Destino"
-            color="#841584"
-          />
-        </Text>
-        
-        <MapView 
-          style={styles.map} 
-          provider={PROVIDER_GOOGLE}
-          showsUserLocation={true}
-          initialRegion={{
-            latitude: -2.16299,
-            longitude: -79.9001917,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          onRegionChange={updateCoords}
-        >    
-        <MapViewDirections
-        origin={origin}
-        destination={destination}
-        apikey={GOOGLE_MAPS_APIKEY}
-        onReady={ async (result) =>  {await scheduleRide(result)}}
-        />
-        </MapView>      
-        <Button
-          onPress={logout}
-          title="Cerrar Sesion"
-          color="#841584"
-        />
       </View>    
     );   
   }
   if (viajeEnProceso == 1) {
     return(
-      <ViajeUser uid={props.uid}/>
+      <ViajeUser uid={props.uid} viajeEnProceso={setViaje}/>
     )
   }
 };
@@ -148,10 +168,22 @@ export const UserApp = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#ccffff',    
+    
+  },
+  card:{
+    marginLeft: 20,
+    position: 'absolute',//use absolute position to show button on top of the map
+    backgroundColor: '#ffffcc',    
+    
+  },
+  header:{
+    fontWeight: 'bold',
+    fontSize:25,
   },
   map: {
-    width: '100%',
-    height: '90%',
+    flex: 1,
+    zIndex: -1
   },
   centeredView: {
     flex: 1,
