@@ -11,7 +11,7 @@ import { UserApp } from "./UserApp";
 import { DriverApp } from "./DriverApp";
 
 export const AppNav = (props) => {  
-  const [user, setUser] = useState({rol: 1
+  const [user, setUser] = useState({rol: 4
   });
   useEffect(() => {
     (async () => {
@@ -29,8 +29,8 @@ export const AppNav = (props) => {
     case 3://Administrador
     return(<Text>Admin</Text>)
       break;
-    default://Usuario
-    return(<Text>Error</Text>)
+    case 4://Loading
+    return(<Text>Cargando</Text>)
       break;
   }
 };
