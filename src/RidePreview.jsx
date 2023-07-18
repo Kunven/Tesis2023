@@ -19,8 +19,7 @@ export const RidePreview = (props) => {
   //     setViajeState(data.viajeEnProceso)
   //   })();
   // }, []);
-  const acceptRide = async () =>{
-    console.log("Accept")
+  const acceptRide = async () =>{    
     await firestore().collection('viajes').doc(ride.id).update({
       conductor: props.uid,
       estado: "En Proceso"
@@ -31,12 +30,10 @@ export const RidePreview = (props) => {
         props.currentRide((await firestore().collection('viajes').doc(ride.id).get()).data())
         props.nav(2)
       })
-    })
-    console.log(ride)
+    })    
     //props.nav(0)
   }
-  const returnView = () =>{
-    console.log("Return")
+  const returnView = () =>{    
     props.nav(0)
   }
   return (

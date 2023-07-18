@@ -25,13 +25,11 @@ export const UserApp = (props) => {
   }
   const updateCoords = (region) => {
     setCoords({ region })
-    //console.log(coords)
   }  
   const setViaje = (data) => {    
     setViajeState(data)
   }  
   const createRoute = async () => {
-    //console.log(coords.region)
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
       setErrorMsg('Permission to access location was denied');
