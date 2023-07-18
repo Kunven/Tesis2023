@@ -1,4 +1,4 @@
-import { Card, Dialog } from '@rneui/themed';
+import {Card} from '@rneui/themed';
 import firestore from '@react-native-firebase/firestore';
 import React, { useState, useEffect } from "react";
 import auth from '@react-native-firebase/auth';

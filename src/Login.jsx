@@ -21,10 +21,7 @@ export const Login = (props) => {
 
   const onPressLogin = () => {
     // Do something about login operation
-    auth().signInWithEmailAndPassword(email,password)
-    .then(() =>{
-      Alert.alert('Login Correcto')
-    })
+    auth().signInWithEmailAndPassword(email,password)    
     .catch(error =>{
       if (error.code == 'auth/invalid-email' || error.code == 'auth/wrong-password') {
         Alert.alert('Credenciales Incorrectas')

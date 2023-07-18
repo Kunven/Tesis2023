@@ -1,14 +1,11 @@
-//import auth from '@react-native-firebase/auth';
-//import { useNavigation } from "@react-navigation/native";
 import React, { useState, useEffect } from "react";
-import {  
-  StyleSheet,
-  Text,  
-  View,  
+import {    
+  Text,    
 } from "react-native";
 import firestore from '@react-native-firebase/firestore';
 import { UserApp } from "./UserApp";
 import { DriverApp } from "./DriverApp";
+import { AdminApp } from "./AdminApp";
 
 export const AppNav = (props) => {  
   const [user, setUser] = useState({rol: 4
@@ -27,7 +24,7 @@ export const AppNav = (props) => {
     return(<DriverApp uid={props.uid}/>)
       break;
     case 3://Administrador
-    return(<Text>Admin</Text>)
+    return(<AdminApp uid={props.uid}/>)
       break;
     case 4://Loading
     return(<Text>Cargando</Text>)
