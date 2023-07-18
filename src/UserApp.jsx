@@ -123,7 +123,25 @@ export const UserApp = (props) => {
           title="Cerrar Sesion"
           color="#841584"
         />
-        <Modal
+        <Dialog isVisible={modalVisible} onBackdropPress={() => {setModalVisible(false)}}>
+          <Dialog.Title title='Costo del Viaje'/>          
+          <Text style={styles.modalSubText}>
+            Costo minimo <Text style={styles.bold}>$3.00</Text>
+          </Text>
+          <Text style={styles.modalSubText}>
+            Costo por kilometro <Text style={styles.bold}>$0.50</Text>
+          </Text>
+          <Text style={styles.modalSubText}>
+            Distancia <Text style={styles.bold}>{distance}km</Text>
+          </Text>
+          <Text style={styles.modalSubText}>
+            Costo Total <Text style={styles.bold}>${distance * 0.5 < 3 ? 3 : 3 + (Math.round(distance)*0.5)}</Text>
+          </Text>
+          <Dialog.Actions>
+            <Dialog.Button title="Solicitar Viaje" onPress={createRide}/>            
+          </Dialog.Actions>
+        </Dialog> 
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={modalVisible}
@@ -132,21 +150,7 @@ export const UserApp = (props) => {
           }}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                <Text style={styles.bold}>Costo del Viaje</Text>
-              </Text>
-              <Text style={styles.modalSubText}>
-                Costo minimo <Text style={styles.bold}>$3.00</Text>
-              </Text>
-              <Text style={styles.modalSubText}>
-                Costo por kilometro <Text style={styles.bold}>$0.50</Text>
-              </Text>
-              <Text style={styles.modalSubText}>
-                Distancia <Text style={styles.bold}>{distance}km</Text>
-              </Text>
-              <Text style={styles.modalSubText}>
-                Costo Total <Text style={styles.bold}>${3 + (Math.round(distance)*0.5)}</Text>
-              </Text>
+              
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={createRide}>
@@ -154,7 +158,7 @@ export const UserApp = (props) => {
               </Pressable>
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </View>    
     );   
   }

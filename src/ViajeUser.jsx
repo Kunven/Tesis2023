@@ -16,7 +16,7 @@ export const ViajeUser = (props) => {
   useEffect(() => {
     (async () => {
       let data = (await firestore().collection('viajes').where('user.uid','==',props.uid)
-      .where('estado','in',["Pendiente","En Proceso"]).limit(1).get().then(async (querySnapshot) =>{
+      .where('estado','in',["Pendiente","En Proceso"]).limit(1).onSnapshot(async (querySnapshot) =>{
         querySnapshot.forEach(async (doc) => {          
           setRide({id: doc.id,... doc.data()})
           if (doc.data().conductor != null) {            

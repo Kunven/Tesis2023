@@ -65,7 +65,7 @@ export const DriverApp = (props) => {
     let url = 'https://www.google.com/maps/dir/?api=1&origin='+ viaje.origin.address+'&destination='+ viaje.destination.address+'&travelmode=driving'    
     Linking.openURL(url);
   }  
-  const changeRideState = async (estado) =>{
+  const changeRideState = async (estado) =>{    
     await firestore().collection('viajes').doc(currentRide.id).update({estado:estado}).then(async () =>{
       await firestore().collection('users').doc(props.uid).update({viajeEnProceso: 0}).then(async () =>{
         await firestore().collection('users').doc(currentRide.user.uid).update({viajeEnProceso: 0}).then(() =>{
