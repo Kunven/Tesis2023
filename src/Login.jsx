@@ -1,5 +1,6 @@
 import auth from '@react-native-firebase/auth';
 //import { useNavigation } from "@react-navigation/native";
+import { Image } from '@rneui/themed';
 import React, { useState } from "react";
 import {  
   StyleSheet,
@@ -10,6 +11,7 @@ import {
   Pressable,
   Keyboard,
   Alert,
+  ActivityIndicator
 } from "react-native";
 
 //import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -21,14 +23,18 @@ export const Login = (props) => {
 
   const onPressLogin = () => {
     // Do something about login operation
-    auth().signInWithEmailAndPassword(email,password)    
-    .catch(error =>{
-      if (error.code == 'auth/invalid-email' || error.code == 'auth/wrong-password') {
-        Alert.alert('Credenciales Incorrectas')
-      }else{
-        Alert.alert(error.code)
-      }
-    })
+    if (email == null || password == null) {
+      Alert.alert('Credenciales Incompletas')
+    }else{
+      auth().signInWithEmailAndPassword(email,password)    
+      .catch(error =>{
+        if (error.code == 'auth/invalid-email' || error.code == 'auth/wrong-password') {
+          Alert.alert('Credenciales Incorrectas')
+        }else{
+          Alert.alert(error.code)
+        }
+      })
+    }    
   };
 
   const onPressForgotPassword = () => {
@@ -43,8 +49,12 @@ export const Login = (props) => {
 
   return (    
     <Pressable style={styles.contentView} onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-      <Text style={styles.title}> LOGO</Text>      
+      <View style={styles.container}>      
+      <Image
+            source={{ uri: 'https://media.discordapp.net/attachments/640325860292821034/1131711721942302720/image.png'}}
+            containerStyle={styles.item}
+            PlaceholderContent={<ActivityIndicator />}
+          />      
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
@@ -82,6 +92,12 @@ const styles = StyleSheet.create({
   contentView: {
     flex: 1,
     backgroundColor: "white",
+  },
+  item: {    
+    width: '45%',
+    height: '26%',
+    resizeMode: 'stretch',
+    marginBottom: 20
   },
   container: {
     flex: 1,

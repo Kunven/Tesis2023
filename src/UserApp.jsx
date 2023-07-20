@@ -13,6 +13,7 @@ import { ViajeUser } from './ViajeUser';
 import { Card, Dialog } from '@rneui/themed';
 export const UserApp = (props) => {  
   const [coords, setCoords] = useState(null);
+  const [user, setUser] = useState(props.user)
   const [origin, setOrigin] = useState(null);
   const [viajeEnProceso, setViajeState] = useState(0);
   const [distance, setDistance] = useState(0);
@@ -28,7 +29,7 @@ export const UserApp = (props) => {
   }  
   const setViaje = (data) => {    
     setViajeState(data)
-  }  
+  }
   const createRoute = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
@@ -85,6 +86,10 @@ export const UserApp = (props) => {
     (async () => {
       let data = (await firestore().collection('users').doc(props.uid).get()).data()
       setViajeState(data.viajeEnProceso)
+      let res = (await firestore().collection('users').doc(props.uid).get()).data()      
+      if (res != null) {
+        setUser(res)
+      }
     })();
   }, []);
   if (viajeEnProceso == 0 && dashToggle == 0) {
@@ -154,7 +159,7 @@ export const UserApp = (props) => {
     return(
       <View style={styles.container}>        
         <Card containerStyle={styles.cardTitle}>
-            <Text style={styles.header}>Bienvenido {props.user.nombres} {props.user.lastNames}</Text>
+            <Text style={styles.header}>Bienvenido {user.nombres} {user.lastNames}</Text>
         </Card>
         <Card containerStyle={styles.cardDash}>
             <Text style={styles.headerSub}>Quieres realizar un viaje?</Text>

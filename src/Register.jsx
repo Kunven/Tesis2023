@@ -26,8 +26,8 @@ export const Register = (props) => {
     if (password != passwordRepeat) {
       Alert.alert("Las contraseñas no coinciden")
     }else{
-      auth().createUserWithEmailAndPassword(email,password).then((userCredential) =>{
-        firestore().collection('users').doc(userCredential.user.uid).set({
+      auth().createUserWithEmailAndPassword(email,password).then(async (userCredential) =>{
+        await firestore().collection('users').doc(userCredential.user.uid).set({
           email: email,
           nombres: names,
           lastNames: lastNames,

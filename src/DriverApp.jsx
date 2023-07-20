@@ -103,7 +103,14 @@ export const DriverApp = (props) => {
     return(
       <View style={styles.container}>
         <ScrollView>
-        <Card containerStyle={styles.card}>
+        <Card containerStyle={styles.logoutButton}>
+        <Button style={styles.logoutButton}
+          onPress={() => auth().signOut()}
+          title="Cerrar Sesion"
+          color={"#ffcc66"}
+        />
+      </Card>
+        <Card containerStyle={styles.cardTop}>
           <Text style={styles.headerCard}>Cancelar Viaje</Text>
           <Text style={styles.text}>Sucedio algo y tienes que cancelar el viaje? Presiona este boton</Text>
           <Button 
@@ -131,12 +138,7 @@ export const DriverApp = (props) => {
             title='Ver  Viaje'
             color="#ffcc66"                
           />
-        </Card>
-        <Button
-            onPress={() => auth().signOut()}
-            title="Cerrar Sesion"
-            color="#841584"
-          />
+        </Card>        
         </ScrollView>      
       </View>
     )
@@ -176,8 +178,7 @@ export const DriverApp = (props) => {
 const styles = StyleSheet.create({  
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',    
-    
+    backgroundColor: '#ccffff',
   },
   bold:{
     fontWeight: 'bold'
@@ -188,7 +189,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffcc',    
     
   },
-  card:{
+  cardTop:{
+    marginTop: 100,
+    backgroundColor: '#ffffcc'
+  },
+  card:{    
     backgroundColor: '#ffffcc'
   },
   headerTitle:{

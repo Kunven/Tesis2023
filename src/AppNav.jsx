@@ -12,7 +12,12 @@ export const AppNav = (props) => {
   useEffect(() => {
     (async () => {
       let data = (await firestore().collection('users').doc(props.uid).get()).data()
-      setUser(data)
+      console.log(data)      
+      if (data == null) {
+        setUser({rol: 1})
+      }else{
+        setUser(data)
+      }
     })();
   }, []);
   switch (user.rol) {

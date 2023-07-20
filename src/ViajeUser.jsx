@@ -36,7 +36,14 @@ export const ViajeUser = (props) => {
     })    
   }
   return (
-    <View style={styles.container}>      
+    <View style={styles.container}>
+      <Card containerStyle={styles.logoutButton}>
+        <Button style={styles.logoutButton}
+          onPress={() => auth().signOut()}
+          title="Cerrar Sesion"
+          color={"#ffcc66"}
+        />
+      </Card>
       <Card containerStyle={styles.card}>
         <Text style={styles.header}>Viaje en Proceso</Text>
         <Text style={styles.text}>El estado actual de tu viaje es : <Text style={styles.bold}>{ride.estado}</Text></Text>
@@ -48,7 +55,7 @@ export const ViajeUser = (props) => {
       <Card containerStyle={styles.card}>
         <Text style={styles.header}>Cancelar Viaje</Text>
         <Text style={styles.text}>Si tu conductor no ha llegado, o no se ha comunicado contigo, puedes cancelar el viaje cuando quieras</Text>        
-        <Button size="sm" title='Cancelar Viaje' onPress={() => {setCancelModal(true)}}>
+        <Button size="sm" title='Cancelar Viaje' onPress={() => {setCancelModal(true)}}color={'#ffcc66'}>
           Learn More
         </Button>
       </Card>
@@ -59,12 +66,7 @@ export const ViajeUser = (props) => {
           <Dialog.Button title="Si" onPress={cancelRide}/>
           <Dialog.Button title="No" onPress={() => {setCancelModal(false)}}/>
         </Dialog.Actions>
-      </Dialog> 
-      <Button
-          onPress={() => auth().signOut()}
-          title="Cerrar Sesion"
-          color="#841584"
-        />
+      </Dialog>       
     </View>
   );
 };
@@ -87,5 +89,12 @@ const styles = StyleSheet.create({
   },
   text:{    
     fontSize:14,
-  }
+  },
+  logoutButton:{
+    backgroundColor: '#ffffcc',
+    position: 'absolute',
+    marginLeft: 20,
+    top:0,
+    left:0,
+  },  
 });
