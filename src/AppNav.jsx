@@ -8,8 +8,7 @@ import { DriverApp } from "./DriverApp";
 import { AdminApp } from "./AdminApp";
 
 export const AppNav = (props) => {  
-  const [user, setUser] = useState({rol: 4
-  });
+  const [user, setUser] = useState({rol: 4})
   useEffect(() => {
     (async () => {
       let data = (await firestore().collection('users').doc(props.uid).get()).data()
@@ -18,13 +17,13 @@ export const AppNav = (props) => {
   }, []);
   switch (user.rol) {
     case 1://Usuario
-      return(<UserApp uid={props.uid}/>)
+      return(<UserApp uid={props.uid} user={user}/>)
       break;
     case 2://Conductor
-    return(<DriverApp uid={props.uid}/>)
+    return(<DriverApp uid={props.uid} user={user}/>)
       break;
     case 3://Administrador
-    return(<AdminApp uid={props.uid}/>)
+    return(<AdminApp uid={props.uid} user={user}/>)
       break;
     case 4://Loading
     return(<Text>Cargando</Text>)

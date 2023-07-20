@@ -14,6 +14,7 @@ import { RidePreview } from './RidePreview';
 export const DriverApp = (props) => {
   const [viajes,setViajes] = useState([])
   const [currentRide,setCurrentRide] = useState({})
+  const [dashToggle, setDashToggle] = useState(1);
   const [viajeProp,setViajeProp] = useState()
   const [watchRide,setRideView] = useState(0)
   useEffect(() => {
@@ -74,27 +75,31 @@ export const DriverApp = (props) => {
       })
     })    
   }
-  if (watchRide == 0) {//List of rides, default view
+  if (watchRide == 0 && dashToggle == 0) {//List of rides, default view
     return (    
       <View style={styles.container}>
         <ScrollView>
-        <Text style={styles.headerTitle}>Viajes Disponibles</Text>
-        {viajes}
-        <Button
-            onPress={() => auth().signOut()}
-            title="Cerrar Sesion"
-            color="#841584"
-          />
+          <Card containerStyle={styles.card}>
+            <Text style={styles.headerTitle}>Viajes Disponibles</Text>
+          </Card>
+          <Card containerStyle={styles.returnMap}>
+            <Button
+              onPress={() => {setDashToggle(1)}}
+              title="Regresar"
+              color={"#ffcc66"}
+            />
+          </Card>
+          {viajes}        
         </ScrollView>      
       </View>
     );
   }
-  if (watchRide == 1) {//Ride Visualization
+  if (watchRide == 1 && dashToggle == 0) {//Ride Visualization
     return(
       <RidePreview ride={viajeProp} nav={setRideView} uid={props.uid} currentRide={setCurrentRide}/>
     )    
   }
-  if (watchRide == 2) {//Ride Accepted, and in process
+  if (watchRide == 2 && dashToggle == 0) {//Ride Accepted, and in process
     return(
       <View style={styles.container}>
         <ScrollView>
@@ -127,7 +132,42 @@ export const DriverApp = (props) => {
             color="#ffcc66"                
           />
         </Card>
+        <Button
+            onPress={() => auth().signOut()}
+            title="Cerrar Sesion"
+            color="#841584"
+          />
         </ScrollView>      
+      </View>
+    )
+  }
+  if (dashToggle == 1) {
+    return(
+      <View style={styles.container}>        
+        <Card containerStyle={styles.cardTitle}>
+            <Text style={styles.header}>Bienvenido {props.user.nombres} {props.user.lastNames}</Text>
+        </Card>
+        <Card containerStyle={styles.cardDash}>
+            <Text style={styles.headerSub}>Quieres realizar un viaje?</Text>
+            <Text>1. Selecciona un viaje del listado</Text>
+            <Text>2. Revisar los detalles del viaje</Text>
+            <Text>3. Puedes realizar el viaje? Aceptalo.</Text>
+            <Text>4. Comunicate con tu cliente y enviale los detalles y un estimado de tu tiempo de llegada</Text>
+            <Text>5. Cobra el viaje y marcalo como terminado</Text>
+            <Button style={styles.logoutButton}
+            onPress={() => setDashToggle(0)}
+            title="Abrir Viajes"
+            color={"#ffcc66"}
+          />
+        </Card>
+        <Card containerStyle={styles.logoutButton}>
+        <Button style={styles.logoutButton}
+            onPress={() => auth().signOut()}
+            title="Cerrar Sesion"
+            color={"#ffcc66"}
+          />
+        </Card>
+        
       </View>
     )
   }
@@ -137,10 +177,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ccffff',    
-    justifyContent: 'center',
+    
   },
   bold:{
     fontWeight: 'bold'
+  },
+  returnMap:{
+    right: 0,
+    position: 'absolute',//use absolute position to show button on top of the map
+    backgroundColor: '#ffffcc',    
+    
   },
   card:{
     backgroundColor: '#ffffcc'
@@ -157,5 +203,33 @@ const styles = StyleSheet.create({
   },
   text:{    
     fontSize:14,
-  }
+  },
+  header:{
+    fontWeight: 'bold',
+    fontSize:25,
+  },
+  headerSub:{
+    fontWeight: 'bold',
+    fontSize:20,
+  },
+  logoutButton:{
+    backgroundColor: '#ffffcc',
+    position: 'absolute',
+    marginLeft: 20,
+    top:0,
+    left:0,
+  },  
+  cardTitle:{
+    marginTop: 90,
+    marginLeft: 20,
+    justifyContent: 'center',
+    backgroundColor: '#ffffcc',
+    
+  },
+  cardDash:{    
+    marginLeft: 20,
+    justifyContent: 'center',
+    backgroundColor: '#ffffcc',
+    
+  },
 });

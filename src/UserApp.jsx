@@ -8,16 +8,16 @@ import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import React, { useState, useEffect } from "react";
-import {StyleSheet,Text,View,Button,Modal, Pressable} from "react-native";
+import {StyleSheet,Text,View,Button, Pressable} from "react-native";
 import { ViajeUser } from './ViajeUser';
 import { Card, Dialog } from '@rneui/themed';
-export const UserApp = (props) => {
-  const [AppState, setApp] = useState(0);
+export const UserApp = (props) => {  
   const [coords, setCoords] = useState(null);
   const [origin, setOrigin] = useState(null);
   const [viajeEnProceso, setViajeState] = useState(0);
   const [distance, setDistance] = useState(0);
   const [destination, setDestination] = useState(null);
+  const [dashToggle, setDashToggle] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
   const GOOGLE_MAPS_APIKEY = 'AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg';
   function logout() {    
@@ -64,7 +64,8 @@ export const UserApp = (props) => {
         conductor: null,
         estado: "Pendiente",
         distancia: distance,
-        costo: 3 + (Math.round(distance)*0.5)
+        costo: 3 + (Math.round(distance)*0.5),
+        created: firestore.FieldValue.serverTimestamp()
       }).then(async () =>{
         await firestore().collection('users').doc(props.uid).update({viajeEnProceso: 1}).then(() =>{
           //restarting vars
@@ -86,7 +87,7 @@ export const UserApp = (props) => {
       setViajeState(data.viajeEnProceso)
     })();
   }, []);
-  if (viajeEnProceso == 0) {
+  if (viajeEnProceso == 0 && dashToggle == 0) {
     return (
       <View style={styles.container}>
         <Card containerStyle={styles.card}>
@@ -94,7 +95,14 @@ export const UserApp = (props) => {
             <Button
             onPress={createRoute}
             title="Confirmar Destino"
-            color="#841584"
+            color={"#ffcc66"}
+          />
+        </Card>
+        <Card containerStyle={styles.returnMap}>
+            <Button
+            onPress={() => {setDashToggle(1)}}
+            title="Regresar"
+            color={"#ffcc66"}
           />
         </Card>
         <MapView 
@@ -115,12 +123,7 @@ export const UserApp = (props) => {
         apikey={GOOGLE_MAPS_APIKEY}
         onReady={ async (result) =>  {await scheduleRide(result)}}
         />
-        </MapView>      
-        <Button
-          onPress={logout}
-          title="Cerrar Sesion"
-          color="#841584"
-        />
+        </MapView>
         <Dialog isVisible={modalVisible} onBackdropPress={() => {setModalVisible(false)}}>
           <Dialog.Title title='Costo del Viaje'/>          
           <Text style={styles.modalSubText}>
@@ -138,31 +141,42 @@ export const UserApp = (props) => {
           <Dialog.Actions>
             <Dialog.Button title="Solicitar Viaje" onPress={createRide}/>            
           </Dialog.Actions>
-        </Dialog> 
-        {/* <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {          
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={createRide}>
-                <Text style={styles.textStyle}>Solicitar Viaje</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal> */}
+        </Dialog>
       </View>    
     );   
   }
-  if (viajeEnProceso == 1) {
+  if (viajeEnProceso == 1 && dashToggle == 0) {
     return(
       <ViajeUser uid={props.uid} viajeEnProceso={setViaje}/>
+    )
+  }
+  if (dashToggle == 1) {
+    return(
+      <View style={styles.container}>        
+        <Card containerStyle={styles.cardTitle}>
+            <Text style={styles.header}>Bienvenido {props.user.nombres} {props.user.lastNames}</Text>
+        </Card>
+        <Card containerStyle={styles.cardDash}>
+            <Text style={styles.headerSub}>Quieres realizar un viaje?</Text>
+            <Text>1. Coloca tu destino en el mapa</Text>
+            <Text>2. Confirma el costo</Text>
+            <Text>3. Espera a que un conductor acepte tu viaje y se comunique contigo</Text>
+            <Text>4. Realiza tu viaje</Text>
+            <Button style={styles.logoutButton}
+            onPress={() => setDashToggle(0)}
+            title="Abrir Mapa"
+            color={"#ffcc66"}
+          />
+        </Card>
+        <Card containerStyle={styles.logoutButton}>
+        <Button style={styles.logoutButton}
+            onPress={() => auth().signOut()}
+            title="Cerrar Sesion"
+            color={"#ffcc66"}
+          />
+        </Card>
+        
+      </View>
     )
   }
 };
@@ -170,8 +184,26 @@ export const UserApp = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',    
+    backgroundColor: '#ccffff',
+  },
+  logoutButton:{
+    backgroundColor: '#ffffcc',
+    position: 'absolute',
+    marginLeft: 20,
+    top:0,
+    left:0,
+  },  
+  cardTitle:{
+    marginTop: 90,
+    marginLeft: 20,
+    justifyContent: 'center',
+    backgroundColor: '#ffffcc',
     
+  },
+  cardDash:{    
+    marginLeft: 20,
+    justifyContent: 'center',
+    backgroundColor: '#ffffcc',
   },
   card:{
     marginLeft: 20,
@@ -179,9 +211,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffcc',    
     
   },
+  returnMap:{
+    right: 0,
+    position: 'absolute',//use absolute position to show button on top of the map
+    backgroundColor: '#ffffcc',    
+    
+  },
   header:{
     fontWeight: 'bold',
     fontSize:25,
+  },
+  headerSub:{
+    fontWeight: 'bold',
+    fontSize:20,
   },
   map: {
     flex: 1,

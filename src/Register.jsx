@@ -32,9 +32,11 @@ export const Register = (props) => {
           nombres: names,
           lastNames: lastNames,
           phone: phone,
-          rol: 1
+          rol: 1,
+          viajeEnProceso: 0,
+          created: firestore.FieldValue.serverTimestamp()
           //uid: userCredential.user.uid
-        }).then(() => {Alert.alert('Usuario Creado con Exito');props.nav(1)}).catch( (error) =>{
+        }).then(() => {props.nav(1)}).catch( (error) =>{
           Alert.alert(error.code)
         })
       }).catch((error) => {

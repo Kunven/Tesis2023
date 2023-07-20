@@ -40,7 +40,7 @@ export const ViajeUser = (props) => {
       <Card containerStyle={styles.card}>
         <Text style={styles.header}>Viaje en Proceso</Text>
         <Text style={styles.text}>El estado actual de tu viaje es : <Text style={styles.bold}>{ride.estado}</Text></Text>
-        {ride.estado == 'Pendiente' ? 
+        {ride.estado = 'Pendiente' ? 
           <Text>Cuando un conductor apruebe tu viaje, seras contactado</Text> :
           <Text>{driver.nombres} {driver.lastNames} esta en camino! Su telefono es: <Text style={styles.bold}>{driver.phone}</Text></Text>
         }        
@@ -72,8 +72,7 @@ export const ViajeUser = (props) => {
 const styles = StyleSheet.create({  
   container: {
     flex: 1,
-    backgroundColor: '#ccffff',
-    
+    backgroundColor: '#ccffff',    
     justifyContent: 'center',
   },
   bold:{
