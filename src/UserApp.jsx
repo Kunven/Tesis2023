@@ -150,12 +150,12 @@ export const UserApp = (props) => {
       </View>    
     );   
   }
-  if (viajeEnProceso == 1 && dashToggle == 0) {
+  if (viajeEnProceso == 1) {
     return(
-      <ViajeUser uid={props.uid} viajeEnProceso={setViaje}/>
+      <ViajeUser uid={props.uid} viajeEnProceso={setViaje} DashToggle={setDashToggle}/>
     )
   }
-  if (dashToggle == 1) {
+  if (dashToggle == 1 && viajeEnProceso == 0) {
     return(
       <View style={styles.container}>        
         <Card containerStyle={styles.cardTitle}>

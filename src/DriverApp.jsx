@@ -50,6 +50,7 @@ export const DriverApp = (props) => {
         await firestore().collection('viajes').where('estado','==','En Proceso').where('conductor','==',props.uid).limit(1).get().then((querySnapshot) =>{
           querySnapshot.forEach(doc => {
             setCurrentRide({id: doc.id,...doc.data()})
+            setDashToggle(0)
           });
         })
         setRideView(2)
@@ -71,6 +72,7 @@ export const DriverApp = (props) => {
       await firestore().collection('users').doc(props.uid).update({viajeEnProceso: 0}).then(async () =>{
         await firestore().collection('users').doc(currentRide.user.uid).update({viajeEnProceso: 0}).then(() =>{
           setRideView(0)
+          setDashToggle(1)
         })
       })
     })    

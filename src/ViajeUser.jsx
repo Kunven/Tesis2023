@@ -17,7 +17,7 @@ export const ViajeUser = (props) => {
     (async () => {
       let data = (await firestore().collection('viajes').where('user.uid','==',props.uid)
       .where('estado','in',["Pendiente","En Proceso"]).limit(1).onSnapshot(async (querySnapshot) =>{
-        querySnapshot.forEach(async (doc) => {          
+        querySnapshot.forEach(async (doc) => {
           setRide({id: doc.id,... doc.data()})
           if (doc.data().conductor != null) {            
             let data = await firestore().collection('users').doc(doc.data().conductor).get()            
@@ -29,9 +29,13 @@ export const ViajeUser = (props) => {
   }, []);
   const cancelRide = async () =>{
     await firestore().collection('viajes').doc(ride.id).update({estado: "Cancelado",}).then(async () =>{
-      await firestore().collection('users').doc(props.uid).update({viaje: "", viajeEnProceso: 0}).then(() =>{
-        setCancelModal(false)
-        props.viajeEnProceso(0)
+      await firestore().collection('users').doc(props.uid).update({viaje: "", viajeEnProceso: 0}).then(async () =>{
+        await firestore().collection('users').doc(ride.conductor).update({viaje: "", viajeEnProceso: 0}).then(() =>{
+          setCancelModal(false)
+          props.viajeEnProceso(0)
+          props.DashToggle(1)
+
+        })
       })
     })    
   }
@@ -47,8 +51,8 @@ export const ViajeUser = (props) => {
       <Card containerStyle={styles.card}>
         <Text style={styles.header}>Viaje en Proceso</Text>
         <Text style={styles.text}>El estado actual de tu viaje es : <Text style={styles.bold}>{ride.estado}</Text></Text>
-        {ride.estado = 'Pendiente' ? 
-          <Text>Cuando un conductor apruebe tu viaje, seras contactado</Text> :
+        {ride.estado == 'Pendiente' ? 
+          <Text>Cuando un conductor acepte tu viaje seras contactado</Text> :
           <Text>{driver.nombres} {driver.lastNames} esta en camino! Su telefono es: <Text style={styles.bold}>{driver.phone}</Text></Text>
         }        
       </Card>

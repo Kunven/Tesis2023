@@ -22,16 +22,23 @@ export const AdminApp = (props) => {
   const [rideCounter, setRideCounter] = useState(0)
   useEffect(() => {
     (async () => {
+      let rides = []
+      await firestore().collection('viajes').get().then((querySnapshot) =>{
+        querySnapshot.forEach(doc => {
+          rides.push(doc.data())
+        });
+      })
       await firestore().collection('users').where('rol','==',2).onSnapshot((querySnapshot) =>{
         let array = []
         querySnapshot.forEach(doc => {
-          let data = {id:doc.id,...doc.data()}          
+          let data = {id:doc.id,...doc.data()}
           array.push(            
             <Card containerStyle={styles.card} key={data.id}>
               <Text style={styles.headerCard}>Conductor - {data.nombres +' '+ data.lastNames}</Text>
               <Text style={styles.text}>Estado - <Text style={styles.bold}>{data.estado}</Text></Text>
               <Text style={styles.text}>Telefono - <Text style={styles.bold}>{data.phone}</Text></Text>
               <Text style={styles.text}>Fecha de Entrada - <Text style={styles.bold}>{new Date(data.created.seconds * 1000).toISOString()}</Text></Text>
+              <Text style={styles.text}>Viajes Realizados - <Text style={styles.bold}>{rides.filter(e => e.conductor == data.id).length}</Text></Text>
               <Button
                 onPress={()=>{changeDriverState(data)}}
                 title={data.estado == 'Activo' ? 'Desactivar Conductor' : 'Activar Conductor'}
@@ -153,7 +160,7 @@ export const AdminApp = (props) => {
             <Text>1. Abre el listado</Text>
             <Text>2. Administra a los conductores</Text>            
             <Button style={styles.logoutButton}
-            onPress={() => setDashToggle(0)}
+            onPress={() => {setDashToggle(0); setAdminState(1)}}
             title="Abrir Conductores"
             color={"#ffcc66"}
           />
