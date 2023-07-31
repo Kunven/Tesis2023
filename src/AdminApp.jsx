@@ -34,7 +34,7 @@ export const AdminApp = (props) => {
           let data = {id:doc.id,...doc.data()}
           array.push(            
             <Card containerStyle={styles.card} key={data.id}>
-              <Text style={styles.headerCard}>Conductor - {data.nombres +' '+ data.lastNames}</Text>
+              <Text style={styles.headerCard}>{data.nombres +' '+ data.lastNames}</Text>
               <Text style={styles.text}>Estado - <Text style={styles.bold}>{data.estado}</Text></Text>
               <Text style={styles.text}>Telefono - <Text style={styles.bold}>{data.phone}</Text></Text>
               <Text style={styles.text}>Fecha de Entrada - <Text style={styles.bold}>{new Date(data.created.seconds * 1000).toISOString()}</Text></Text>

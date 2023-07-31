@@ -30,14 +30,14 @@ export const ViajeUser = (props) => {
   const cancelRide = async () =>{
     await firestore().collection('viajes').doc(ride.id).update({estado: "Cancelado",}).then(async () =>{
       await firestore().collection('users').doc(props.uid).update({viaje: "", viajeEnProceso: 0}).then(async () =>{
-        await firestore().collection('users').doc(ride.conductor).update({viaje: "", viajeEnProceso: 0}).then(() =>{
-          setCancelModal(false)
-          props.viajeEnProceso(0)
-          props.DashToggle(1)
-
-        })
+        if (ride.conductor != null) {
+          await firestore().collection('users').doc(ride.conductor).update({viaje: "", viajeEnProceso: 0})
+        }
+        setCancelModal(false)
+        props.viajeEnProceso(0)
+        props.DashToggle(1)        
       })
-    })    
+    })
   }
   return (
     <View style={styles.container}>

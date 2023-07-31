@@ -33,7 +33,6 @@ export const UserApp = (props) => {
   const createRoute = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      setErrorMsg('Permission to access location was denied');
       return;
     }
     let location = await Location.getCurrentPositionAsync({});
@@ -65,7 +64,7 @@ export const UserApp = (props) => {
         conductor: null,
         estado: "Pendiente",
         distancia: distance,
-        costo: 3 + (Math.round(distance)*0.5),
+        costo: distance * 0.5 < 3 ? 3 : 3 + (Math.round(distance)*0.5),
         created: firestore.FieldValue.serverTimestamp()
       }).then(async () =>{
         await firestore().collection('users').doc(props.uid).update({viajeEnProceso: 1}).then(() =>{
