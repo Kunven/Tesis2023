@@ -87,7 +87,7 @@ export const AdminApp = (props) => {
     return(
       <View style={styles.container}>
         <Card containerStyle={styles.card}>
-          <Text style={styles.headerTitle}>Reporte de Viajes</Text>
+          <Text style={styles.headerTitle}>Lista de Viajes</Text>
         </Card>
         <Card containerStyle={styles.returnMap}>
             <Button
@@ -171,7 +171,7 @@ export const AdminApp = (props) => {
             <Text>2. Selecciona un conductor</Text>            
             <Button style={styles.logoutButton}
             onPress={() => {setAdminState(2);setDashToggle(0)}}
-            title="Abrir Reporte de Viajes"
+            title="Abrir Lista de Viajes"
             color={"#ffcc66"}
           />
         </Card>

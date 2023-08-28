@@ -29,7 +29,7 @@ export const DriverApp = (props) => {
             const origin = data.origin.address
             const destination = data.destination.address
             array.push(
-              <Card containerStyle={styles.card} key={data.user.client}>
+              <Card containerStyle={styles.card} key={data.id}>
                 <Text style={styles.headerCard}>Cliente - {data.user.client}</Text>
                 <Text style={styles.text}>Punto A <Text style={styles.bold}>{origin}</Text></Text>
                 <Text style={styles.text}>Punto B <Text style={styles.bold}>{destination}</Text></Text>

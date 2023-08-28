@@ -8,15 +8,17 @@ import * as Location from 'expo-location';
 import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
 import React, { useState, useEffect } from "react";
-import {StyleSheet,Text,View,Button, Pressable} from "react-native";
+import {StyleSheet,Text,View,Button, ScrollView} from "react-native";
 import { ViajeUser } from './ViajeUser';
 import { Card, Dialog } from '@rneui/themed';
 export const UserApp = (props) => {  
+  const [viajes,setViajes] = useState([])
   const [coords, setCoords] = useState(null);
   const [user, setUser] = useState(props.user)
   const [origin, setOrigin] = useState(null);
   const [viajeEnProceso, setViajeState] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [listaViajes, setLista] = useState(0);
   const [destination, setDestination] = useState(null);
   const [dashToggle, setDashToggle] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
@@ -88,10 +90,33 @@ export const UserApp = (props) => {
       let res = (await firestore().collection('users').doc(props.uid).get()).data()      
       if (res != null) {
         setUser(res)
-      }
+      
+      }      
+      await firestore().collection('viajes').where('estado','==','Finalizado').get().then((querySnapshot) =>{
+        let array = []
+        querySnapshot.forEach(async (doc) => {
+          setViajes([])
+          let data = {id: doc.id, ...doc.data()}
+          if (data.user.uid == props.uid) {            
+            let conductor = (await firestore().collection('users').doc(data.conductor).get()).data()            
+            const origin = data.origin.address
+            const destination = data.destination.address
+            array.push(
+              <Card containerStyle={styles.card2} key={data.id}>
+                <Text style={styles.headerCard}>Conductor - <Text style={styles.bold}>{conductor.nombres} {conductor.lastNames}</Text></Text>
+                <Text style={styles.text}>Punto A <Text style={styles.bold}>{origin}</Text></Text>
+                <Text style={styles.text}>Punto B <Text style={styles.bold}>{destination}</Text></Text>
+                <Text style={styles.text}>Costo - <Text style={styles.bold}>${data.costo}</Text></Text>
+                <Text style={styles.text}>Fecha <Text style={styles.bold}>{new Date(data.created.seconds * 1000).toISOString()}</Text></Text>
+              </Card>
+            )
+          }          
+        });
+        setViajes(array)
+      })
     })();
   }, []);
-  if (viajeEnProceso == 0 && dashToggle == 0) {
+  if (viajeEnProceso == 0 && dashToggle == 0 && listaViajes == 0) {
     return (
       <View style={styles.container}>
         <Card containerStyle={styles.card}>
@@ -154,11 +179,39 @@ export const UserApp = (props) => {
       <ViajeUser uid={props.uid} viajeEnProceso={setViaje} DashToggle={setDashToggle}/>
     )
   }
+  if (dashToggle == 0 && listaViajes == 1) {
+    return(
+      <View style={styles.container}>
+      <ScrollView>
+        <Card containerStyle={styles.cardTitle}>
+          <Text style={styles.headerTitle}>Viajes Realizados</Text>
+        </Card>
+        <Card containerStyle={styles.returnMap}>
+          <Button
+            onPress={() => {setDashToggle(1);setLista(0)}}
+            title="Regresar"
+            color={"#ffcc66"}
+          />
+        </Card>
+        {viajes}        
+      </ScrollView>      
+    </View>
+    )
+  }
   if (dashToggle == 1 && viajeEnProceso == 0) {
     return(
       <View style={styles.container}>        
         <Card containerStyle={styles.cardTitle}>
             <Text style={styles.header}>Bienvenido {user.nombres} {user.lastNames}</Text>
+        </Card>
+        <Card containerStyle={styles.cardDash}>
+            <Text style={styles.headerSub}>Viajes Realizados</Text>            
+            <Text>Presiona aqui para ver los viajes que has realizado</Text>
+            <Button style={styles.logoutButton}
+            onPress={() => {setDashToggle(0);setLista(1)}}
+            title="Ver Viajes"
+            color={"#ffcc66"}
+          />
         </Card>
         <Card containerStyle={styles.cardDash}>
             <Text style={styles.headerSub}>Quieres realizar un viaje?</Text>
@@ -171,7 +224,7 @@ export const UserApp = (props) => {
             title="Abrir Mapa"
             color={"#ffcc66"}
           />
-        </Card>
+        </Card>        
         <Card containerStyle={styles.logoutButton}>
         <Button style={styles.logoutButton}
             onPress={() => auth().signOut()}
@@ -189,6 +242,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ccffff',
+  },
+  headerTitle:{
+    fontWeight: 'bold',
+    fontSize:25,
   },
   logoutButton:{
     backgroundColor: '#ffffcc',
@@ -208,6 +265,9 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     justifyContent: 'center',
     backgroundColor: '#ffffcc',
+  },
+  card2:{    
+    backgroundColor: '#ffffcc'
   },
   card:{
     marginLeft: 20,
