@@ -10,7 +10,7 @@ export default function App() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   StatusBar.setHidden(true)
-  Geocoder.init("AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg");
+  Geocoder.init("YOURMAPSAPIKEY");
   // Handle user state changes
   function onAuthStateChanged(user) {
     setUser(user);

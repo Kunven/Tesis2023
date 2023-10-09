@@ -22,7 +22,7 @@ export const UserApp = (props) => {
   const [destination, setDestination] = useState(null);
   const [dashToggle, setDashToggle] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
-  const GOOGLE_MAPS_APIKEY = 'AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg';
+  const GOOGLE_MAPS_APIKEY = 'YOURMAPSAPIKEY';
   function logout() {    
     auth().signOut()
   }

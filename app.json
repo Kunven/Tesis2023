@@ -20,7 +20,7 @@
     "android": {
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg"
+          "apiKey": "YOURMAPSAPIKEY"
         }
       },
       "googleServicesFile": "google-services.json",

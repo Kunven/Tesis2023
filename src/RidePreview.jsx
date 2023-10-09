@@ -11,7 +11,7 @@ import {StyleSheet,Text,View,Button} from "react-native";
 import { Card} from '@rneui/themed';
 export const RidePreview = (props) => {
   const [ride, setRide] = useState(props.ride);  
-  const GOOGLE_MAPS_APIKEY = 'AIzaSyCqb0o2yg8V4fvUA6PXzoD-lTm10Itdefg';  
+  const GOOGLE_MAPS_APIKEY = 'YOURMAPSAPIKEY';  
     
   // useEffect(() => {
   //   (async () => {
